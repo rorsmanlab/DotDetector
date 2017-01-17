@@ -216,6 +216,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
       
       
       
+   	
    }
  
    public static ImageStack DotDetect(ImageStack stack, double gbSigma, int cycles, double accuracy) {

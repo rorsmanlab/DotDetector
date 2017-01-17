@@ -22,7 +22,8 @@ public class PlotDotResults_A implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 //		int [][] M = null;
-		ImagePlus imagePL = WindowManager.getImage("DotCorrected");  
+//		ImagePlus imagePL = WindowManager.getImage("DotCorrected");
+		ImagePlus imagePL = WindowManager.getImage("Dotted");  
 		RoiManager manager = RoiManager.getInstance();
 		ResultsTable rt = manager.multiMeasure(imagePL);
 		rt.show("Results"); 
