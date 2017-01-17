@@ -58,7 +58,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 //   private JButton btnDetect;   // Declare a Button component
 //   private JButton btnPlot;     // Button for plotting
  
-   
+//   test line to check the refresh
       
    // Constructor to setup GUI components and event handlers
    public DetectDots_A () {

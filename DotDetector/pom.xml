@@ -14,7 +14,7 @@
 
 	<groupId>sc.fiji</groupId>
 	<artifactId>Detect_Dots</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0</version>
 
 	<name>plugins/Detect_Dots_A.jar</name>
 	<description>A Maven project implementing an ImageJ 1.x plugin</description>
