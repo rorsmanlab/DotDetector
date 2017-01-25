@@ -1,0 +1,72 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import ij.IJ;
+import ij.ImagePlus;
+import ij.ImageStack;
+import ij.WindowManager;
+import ij.measure.Measurements;
+import ij.plugin.ImageCalculator;
+import ij.plugin.filter.ParticleAnalyzer;
+import ij.process.ImageProcessor;
+import ij.process.BinaryProcessor;
+import ij.process.ByteProcessor;
+
+	public class CountDots_A implements ActionListener {
+//
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		double tolerance2 = Double.parseDouble(DetectDots_A.tftolerance2.getText()); //100; // for dot detection
+     	int refFrame = Integer.parseInt(DetectDots_A.tfreframe.getText()); //5; //frame for roi detection
+     	int lifetime = Integer.parseInt(DetectDots_A.tflifetime.getText()); //4;
+	     double accuracy = Double.parseDouble(DetectDots_A.tfaccuracy.getText()); //0.0002; // accuracy for Gaussian blur, pretty standard
+	     double StartTime=System.nanoTime();
+	     	double ElapsedTime;
+
+	    DetectDots_A.progressBar.setValue(0);
+//	   	IJ.run("Duplicate...", "duplicate");
+	    
+//	   	ImagePlus stackDP = WindowManager.getCurrentImage();	
+		
+	   	ImagePlus stackDP = WindowManager.getImage("DoG");
+		stackDP.setTitle("imageDP");
+		ImageStack stkDP = stackDP.getImageStack();
+		
+		ImagePlus stackSG = WindowManager.getImage("Segmented");
+		ImageStack stkSG = stackSG.getImageStack();
+	    
+	    
+        ImageCalculator ik = new ImageCalculator();
+        ImagePlus stackDF = stackDP.duplicate();
+        stackDF.setTitle("Difference");
+        ik.run("AND stack", stackDF, stackSG);
+        stackDF.show();
+        
+        ImageStack stkDT = DetectDots_A.ConvertToDots(stackDF.getStack(), tolerance2);
+          	ImagePlus stackDT = new ImagePlus("Dotted", stkDT);
+          	stackDT.show();
+          	
+          	ImageStack stkCDT=DetectDots_A.CorrectDots(stackDT.getStack(), tolerance2, lifetime);
+          	ImagePlus stackCDT = new ImagePlus("DotCorrected", stkCDT);
+          	stackCDT.show();
+          	
+          	ImageProcessor ip=stkSG.getProcessor(refFrame);
+          	ImagePlus imageRF = new ImagePlus("Reference frame",ip);
+          	ip.invert();
+          	ImagePlus imageRFb=DetectDots_A.CreateBinary(imageRF,true);
+//          	ip.convertToByte(true);
+//          	ImagePlus imageRF = new ImagePlus("Reference for ROI",ip);
+          	imageRFb.show();
+          	ParticleAnalyzer pa = new ParticleAnalyzer(ParticleAnalyzer.ADD_TO_MANAGER, Measurements.AREA, null, 0, 100000000);
+//          	pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, Measurements.AREA, tmpResults, 0, Double.POSITIVE_INFINITY);
+          	pa.analyze(imageRFb, imageRFb.getProcessor());
+          //	
+          if (DetectDots_A.checkBoxDotCount.isSelected()){
+        	DetectDots_A.PlotDotResults();
+        	};
+        	
+          	ElapsedTime=Math.round((System.nanoTime()-StartTime)*1E-07);
+          	System.out.println("Elapsed time = "+ ElapsedTime/100 +" s");
+          	DetectDots_A.tfelapsedtime.setText(String.valueOf(ElapsedTime/100));
+}
+}
