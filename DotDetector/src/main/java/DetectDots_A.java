@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageProducer;
 import java.beans.PropertyChangeEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -42,10 +43,11 @@ import javax.swing.JTable;
 import javax.swing.JProgressBar;
 import javax.swing.JTabbedPane;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+
 //import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
  
 // An AWT program inherits from the top-level container java.awt.Frame
 public class DetectDots_A extends JFrame implements ActionListener {
@@ -75,13 +77,13 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static JTextField tftolerance2;
    public static JTextField tfreframe;
    public static JTextField tflifetime;
-   public static  JTextField tfframe;
+   public static JTextField tfframe;
    public static JTextField tfelapsedtime;
    private JPanel panelSegmentation;
    private JPanel panelDotCount;
    private Label labelDotCount;
    private JButton btnDotCount;
-   public static JCheckBox checkBoxDotCount;
+   public static JCheckBox checkBoxPlotDotCount;
    private JPanel panelProgress;
    private Label labelProgress;
    private JTable table;
@@ -91,7 +93,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static JProgressBar progressBar;
    private Label labelFFT;
    private JButton button;
-   private JCheckBox checkBox;
+   private JCheckBox checkBoxFourier;
    private Label label_3;
    private JTextField textField;
    private Label label_4;
@@ -100,13 +102,20 @@ public class DetectDots_A extends JFrame implements ActionListener {
    private JTextField textField_2;
    private Label labelLoG;
    private JButton button_1;
-   private JCheckBox checkBox_1;
+   private JCheckBox checkBoxLoG;
    private Label label_7;
    private JTextField textField_3;
    private Label label_8;
    private JTextField textField_4;
    private Label label_9;
    private JTextField textField_5;
+   private JSeparator separator;
+   private JSeparator separator_1;
+   public static JCheckBox checkBoxBordersDotCount;
+   public static Canvas canvas;
+   public static JPanel HeatMapPanel;
+   public static JPanel DotsPanel;
+   public static JPanel DotsDtPanel;
    
 
 
@@ -128,27 +137,36 @@ public class DetectDots_A extends JFrame implements ActionListener {
    	getContentPane().setBackground(SystemColor.menu);
       getContentPane().setLayout(null);
       
+      labelHeatmap = new Label("dots");
+      labelHeatmap.setBounds(289, 540, 35, 22);
+      getContentPane().add(labelHeatmap);
+      
+      HeatMapPanel = new JPanel();
+      HeatMapPanel.setBackground(Color.WHITE);
+      HeatMapPanel.setBounds(289, 546, 526, 87);
+      getContentPane().add(HeatMapPanel);
+      
+      label = new Label("dots");
+      label.setBounds(289, 93, 35, 22);
+      getContentPane().add(label);
+      
+      DotsPanel = new JPanel();
+      DotsPanel.setBackground(Color.WHITE);
+      DotsPanel.setBounds(289, 99, 526, 215);
+      getContentPane().add(DotsPanel);
+      
       Label labelDdt = new Label("d/dt");
       labelDdt.setBounds(298, 320, 25, 22);
       getContentPane().add(labelDdt);
       
-      labelHeatmap = new Label("dots");
-      labelHeatmap.setBounds(279, 546, 35, 22);
-      getContentPane().add(labelHeatmap);
-      
-      label = new Label("dots");
-      label.setBounds(297, 99, 35, 22);
-      getContentPane().add(label);
+      DotsDtPanel = new JPanel();
+      DotsDtPanel.setBackground(Color.WHITE);
+      DotsDtPanel.setBounds(289, 320, 526, 215);
+      getContentPane().add(DotsDtPanel);
       
       labelOutput = new Label("data output");
       labelOutput.setBounds(297, 0, 79, 22);
       getContentPane().add(labelOutput);
-      
-      Canvas canvas = new Canvas();
-      canvas.setForeground(SystemColor.window);
-      canvas.setBackground(SystemColor.window);
-      canvas.setBounds(288, 99, 527, 210);
-      getContentPane().add(canvas);
       
       JDesktopPane desktopPane = new JDesktopPane();
       desktopPane.setBounds(91, 551, 1, 1);
@@ -157,7 +175,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
       panelSegmentation = new JPanel();
       panelSegmentation.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
       panelSegmentation.setBackground(SystemColor.menu);
-      panelSegmentation.setBounds(10, 320, 263, 93);
+      panelSegmentation.setBounds(10, 261, 263, 93);
       getContentPane().add(panelSegmentation);
             panelSegmentation.setLayout(null);
             
@@ -211,147 +229,157 @@ public class DetectDots_A extends JFrame implements ActionListener {
       panelDoG.setLayout(null);
       panelDoG.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
       panelDoG.setBackground(SystemColor.menu);
-      panelDoG.setBounds(10, 11, 263, 298);
+      panelDoG.setBounds(10, 11, 263, 248);
       getContentPane().add(panelDoG);
       
       Label labelDoG = new Label("DoG");
       labelDoG.setFont(new Font("Arial", Font.BOLD, 12));
-      labelDoG.setBounds(10, 10, 86, 22);
+      labelDoG.setBounds(10, 3, 86, 22);
       panelDoG.add(labelDoG);
       
       JButton btnDoGApply = new JButton("Apply");
-      btnDoGApply.setBounds(7, 65, 89, 23);
+      btnDoGApply.setBounds(7, 58, 89, 23);
       panelDoG.add(btnDoGApply);
       btnDoGApply.addActionListener(new DoGOfImage_A());
       
       
       JCheckBox checkBoxDoGInclude = new JCheckBox("Include");
-      checkBoxDoGInclude.setBounds(6, 38, 86, 23);
+      checkBoxDoGInclude.setBounds(6, 31, 86, 23);
       panelDoG.add(checkBoxDoGInclude);
       // "super" Frame (a Container) sets its layout to FlowLayout, which arranges
       // the components from left-to-right, and flow to next row from top-to-bottom.
  
       lblgbSigma1 = new Label("sigma");
       lblgbSigma1.setAlignment(Label.RIGHT);
-      lblgbSigma1.setBounds(145, 10, 40, 22);
+      lblgbSigma1.setBounds(145, 3, 40, 22);
       panelDoG.add(lblgbSigma1);
       
       tfgbSigma1 = new JTextField("1", 10);
-      tfgbSigma1.setBounds(201, 10, 52, 21);
+      tfgbSigma1.setBounds(201, 3, 52, 21);
       panelDoG.add(tfgbSigma1);
       tfgbSigma1.setEditable(true);
       
            lblaccuracy = new Label("blur accuracy");
            lblaccuracy.setAlignment(Label.RIGHT);
-           lblaccuracy.setBounds(106, 37, 79, 22);
+           lblaccuracy.setBounds(106, 30, 79, 22);
            panelDoG.add(lblaccuracy);
            
            tfaccuracy = new JTextField("0.0002", 10);
-           tfaccuracy.setBounds(201, 37, 52, 22);
+           tfaccuracy.setBounds(201, 30, 52, 22);
            panelDoG.add(tfaccuracy);
            tfaccuracy.setEditable(true);
            
                  lblcycles = new Label("DoG cycles");
                  lblcycles.setAlignment(Label.RIGHT);
-                 lblcycles.setBounds(102, 65, 83, 23);
+                 lblcycles.setBounds(102, 58, 83, 23);
                  panelDoG.add(lblcycles);
                  
                  tfcycles = new JTextField("1", 10);
-                 tfcycles.setBounds(201, 65, 52, 21);
+                 tfcycles.setBounds(201, 58, 52, 21);
                  panelDoG.add(tfcycles);
                  tfcycles.setEditable(true);
                  
                  labelFFT = new Label("Fourier");
-                 labelFFT.setBounds(14, 106, 86, 22);
+                 labelFFT.setBounds(11, 86, 86, 22);
                  panelDoG.add(labelFFT);
                  labelFFT.setFont(new Font("Arial", Font.BOLD, 12));
                  
-                 checkBox = new JCheckBox("Include");
-                 checkBox.setBounds(10, 134, 86, 23);
-                 panelDoG.add(checkBox);
+                 checkBoxFourier = new JCheckBox("Include");
+                 checkBoxFourier.setBounds(7, 114, 86, 23);
+                 panelDoG.add(checkBoxFourier);
                  
                  button = new JButton("Apply");
-                 button.setBounds(11, 161, 89, 23);
+                 button.setBounds(8, 141, 89, 23);
                  panelDoG.add(button);
                  
                  label_5 = new Label("DoG cycles");
-                 label_5.setBounds(122, 161, 67, 23);
+                 label_5.setBounds(119, 141, 67, 23);
                  panelDoG.add(label_5);
                  label_5.setAlignment(Label.RIGHT);
                  
                  label_4 = new Label("blur accuracy");
-                 label_4.setBounds(110, 133, 79, 22);
+                 label_4.setBounds(107, 113, 79, 22);
                  panelDoG.add(label_4);
                  label_4.setAlignment(Label.RIGHT);
                  
                  label_3 = new Label("sigma");
-                 label_3.setBounds(149, 106, 40, 22);
+                 label_3.setBounds(146, 86, 40, 22);
                  panelDoG.add(label_3);
                  label_3.setAlignment(Label.RIGHT);
                  
                  textField = new JTextField("1", 10);
-                 textField.setBounds(205, 106, 52, 21);
+                 textField.setBounds(202, 86, 52, 21);
                  panelDoG.add(textField);
                  textField.setEditable(true);
                  
                  textField_1 = new JTextField("0.0002", 10);
-                 textField_1.setBounds(205, 133, 52, 22);
+                 textField_1.setBounds(202, 113, 52, 22);
                  panelDoG.add(textField_1);
                  textField_1.setEditable(true);
                  
                  textField_2 = new JTextField("1", 10);
-                 textField_2.setBounds(205, 161, 52, 21);
+                 textField_2.setBounds(202, 141, 52, 21);
                  panelDoG.add(textField_2);
                  textField_2.setEditable(true);
                  
                  labelLoG = new Label("LoG");
-                 labelLoG.setBounds(14, 210, 86, 22);
+                 labelLoG.setBounds(13, 168, 86, 22);
                  panelDoG.add(labelLoG);
                  labelLoG.setFont(new Font("Arial", Font.BOLD, 12));
                  
-                 checkBox_1 = new JCheckBox("Include");
-                 checkBox_1.setBounds(10, 238, 86, 23);
-                 panelDoG.add(checkBox_1);
+                 checkBoxLoG = new JCheckBox("Include");
+                 checkBoxLoG.setBounds(9, 196, 86, 23);
+                 panelDoG.add(checkBoxLoG);
                  
                  button_1 = new JButton("Apply");
-                 button_1.setBounds(11, 265, 89, 23);
+                 button_1.setBounds(10, 223, 89, 23);
                  panelDoG.add(button_1);
                  
                  label_7 = new Label("sigma");
-                 label_7.setBounds(149, 210, 40, 22);
+                 label_7.setBounds(148, 168, 40, 22);
                  panelDoG.add(label_7);
                  label_7.setAlignment(Label.RIGHT);
                  
                  label_8 = new Label("blur accuracy");
-                 label_8.setBounds(110, 237, 79, 22);
+                 label_8.setBounds(109, 195, 79, 22);
                  panelDoG.add(label_8);
                  label_8.setAlignment(Label.RIGHT);
                  
                  label_9 = new Label("DoG cycles");
-                 label_9.setBounds(122, 265, 67, 23);
+                 label_9.setBounds(121, 223, 67, 23);
                  panelDoG.add(label_9);
                  label_9.setAlignment(Label.RIGHT);
                  
                  textField_3 = new JTextField("1", 10);
-                 textField_3.setBounds(205, 210, 52, 21);
+                 textField_3.setBounds(204, 168, 52, 21);
                  panelDoG.add(textField_3);
                  textField_3.setEditable(true);
                  
                  textField_4 = new JTextField("0.0002", 10);
-                 textField_4.setBounds(205, 237, 52, 22);
+                 textField_4.setBounds(204, 195, 52, 22);
                  panelDoG.add(textField_4);
                  textField_4.setEditable(true);
                  
                  textField_5 = new JTextField("1", 10);
-                 textField_5.setBounds(205, 265, 52, 21);
+                 textField_5.setBounds(204, 223, 52, 21);
                  panelDoG.add(textField_5);
                  textField_5.setEditable(true);
+                 
+                 separator = new JSeparator();
+                 separator.setForeground(Color.BLACK);
+                 separator.setBounds(7, 84, 248, 2);
+                 panelDoG.add(separator);
+                 
+                 separator_1 = new JSeparator();
+                 separator_1.setForeground(Color.BLACK);
+                 separator_1.setBounds(8, 165, 248, 2);
+                 panelDoG.add(separator_1);
                  
                  panelDotCount = new JPanel();
                  panelDotCount.setLayout(null);
                  panelDotCount.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
                  panelDotCount.setBackground(SystemColor.menu);
-                 panelDotCount.setBounds(10, 418, 263, 93);
+                 panelDotCount.setBounds(11, 357, 263, 157);
                  getContentPane().add(panelDotCount);
                  
                  labelDotCount = new Label("Dot count");
@@ -360,14 +388,14 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDotCount.add(labelDotCount);
                  
                  btnDotCount = new JButton("Apply");
-                 btnDotCount.setBounds(7, 65, 89, 23);
+                 btnDotCount.setBounds(5, 128, 89, 23);
                  panelDotCount.add(btnDotCount);
                  btnDotCount.addActionListener(new CountDots_A());
                  
-                 checkBoxDotCount = new JCheckBox("Plot");
-                 checkBoxDotCount.setSelected(true);
-                 checkBoxDotCount.setBounds(6, 38, 86, 23);
-                 panelDotCount.add(checkBoxDotCount);
+                 checkBoxPlotDotCount = new JCheckBox("Plot");
+                 checkBoxPlotDotCount.setSelected(true);
+                 checkBoxPlotDotCount.setBounds(6, 38, 86, 23);
+                 panelDotCount.add(checkBoxPlotDotCount);
                  
                  lbltolerance2 = new Label("tolerance");
                  lbltolerance2.setAlignment(Label.RIGHT);
@@ -399,6 +427,15 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  tflifetime.setBounds(218, 66, 35, 20);
                  panelDotCount.add(tflifetime);
                  tflifetime.setEditable(true);
+                 
+                 JCheckBox checkBoxCorrLifetimeDotCount = new JCheckBox("Lifetime corr");
+                 checkBoxCorrLifetimeDotCount.setBounds(140, 94, 113, 23);
+                 panelDotCount.add(checkBoxCorrLifetimeDotCount);
+                 
+                 checkBoxBordersDotCount = new JCheckBox("Border corr");
+                 checkBoxBordersDotCount.setSelected(true);
+                 checkBoxBordersDotCount.setBounds(6, 64, 114, 23);
+                 panelDotCount.add(checkBoxBordersDotCount);
                  
                  panelProgress = new JPanel();
                  panelProgress.setLayout(null);
@@ -445,12 +482,12 @@ public class DetectDots_A extends JFrame implements ActionListener {
                       
 //      btnDetect.addActionListener(this);
                       JButton btnDetect = new JButton("Detect All");
-                      btnDetect.setBounds(7, 35, 89, 25);
+                      btnDetect.setBounds(10, 38, 89, 25);
                       panelProgress.add(btnDetect);
                       btnDetect.setPreferredSize(new Dimension(65, 25));
                       
                       JButton btnPlot = new JButton("Plot");
-                      btnPlot.setLocation(7, 68);
+                      btnPlot.setLocation(164, 71);
                       panelProgress.add(btnPlot);
                       btnPlot.setPreferredSize(new Dimension(65, 25));
                       btnPlot.setSize(new Dimension(89, 25));
@@ -467,20 +504,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                       progressBar.setValue(0);
                       progressBar.setStringPainted(true);
                       
-                      Canvas canvasHeatmap = new Canvas();
-                      canvasHeatmap.setBackground(Color.WHITE);
-                      canvasHeatmap.setBounds(282, 557, 533, 76);
-                      getContentPane().add(canvasHeatmap);
-                      
                       Canvas canvasDdt = new Canvas();
                       canvasDdt.setForeground(Color.WHITE);
                       canvasDdt.setBackground(Color.WHITE);
                       canvasDdt.setBounds(288, 330, 527, 210);
                       getContentPane().add(canvasDdt);
-                      
-                      JPanel panelGFX = new JPanel();
-                      panelGFX.setBounds(339, 314, 263, 163);
-                      getContentPane().add(panelGFX);
                       
                       btnPlot.addActionListener(new PlotDotResults_A());
                       btnDetect.addActionListener(this);
@@ -533,6 +561,19 @@ public class DetectDots_A extends JFrame implements ActionListener {
     new ImageJ();
    	ImagePlus imageA = IJ.openImage();
    	imageA.show();
+//   	ImageCanvas imageAC=imageA.getCanvas();
+   	
+//   	DetectDots_A.EPanel_1.setBackground(Color.BLUE);
+
+   	
+   	
+   	
+    //Graphics g = DetectDots_A.panelGFX.getGraphics();
+//    g.setColor(new Color(255, 0, 0));
+//    g.drawString("Hello", 200, 200);
+////	DetectDots_A.canvas.getGraphics().drawImage(imageA.getBufferedImage(), 0, 0, null)
+	
+//	canvas.getGraphics().drawImage(img, 0,0, null);
 //   	ImagePlus imageA = WindowManager.getCurrentImage();
 //      	
       
@@ -746,21 +787,13 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		System.out.println("width = "+width+"; height =  "+height+";");
 		ImagePlus imageRE = new ImagePlus("Results HeatMap",ip2);
 		imageRE.show();
-		
-
-        ImageCanvas imageREC = new ImageCanvas(imageRE);
-//        JFrame frame = new JFrame("TEST");
-//        frame.add(imageREC);
-//        canvasHeatmap.add
-//        DetectDots_A.canvasHeatmap
-//        frame.pack();
-//        frame.setLocationRelativeTo(null);
-//        frame.setVisible(true);
-//          DetectDots_A.add(imageREC);
-//          panelGFX
-//          myImageCanvas = new ij.gui.ImageCanvas(myImagePlus);
-//        Graphics g = DetectDots_A.GetContentPane().panel.getGraphics();
-		
+//		imageRE.getWindow().setLocationAndSize(HeatMapPanel.getX(), HeatMapPanel.getY(), HeatMapPanel.getWidth(), HeatMapPanel.getHeight());
+		imageRE.getWindow().setLocation(HeatMapPanel.getX(), HeatMapPanel.getY());
+		imageRE.getWindow().setPreferredSize(HeatMapPanel.getPreferredSize());
+		ImageCanvas imageREC=imageRE.getCanvas();
+//		imageREC.setPreferredSize(HeatMapPanel.getSize());
+//		HeatMapPanel.add(imageREC,0,0);
+//		
 		IJ.run("LUT... ", "open=C:\\Users\\atarasov\\Documents\\MEGAsync\\Eclipse_workspace\\royal.lut");
 //		IJ.run("LUT... ", "open=C:\\royal.lut");
 		IJ.run("Size...", "width=600 height=200 interpolation=None");
@@ -797,11 +830,25 @@ public class DetectDots_A extends JFrame implements ActionListener {
 			
 		 
 		 
-		 Plot pl = new Plot("_","time","F", Mav_x,Mav);
-		 pl.show();
+		 Plot pl = new Plot("dots","time","F", Mav_x,Mav);
+//		 pl.show();
 		 
+		 
+		 		 
 		 Plot dpl = new Plot("derivative","time","dFdt", dt,dMav);
-		 dpl.show();
+//		 dpl.show();
+		 
+		 ImagePlus plIP=pl.getImagePlus();
+		 plIP.show();
+		 plIP.getWindow().setLocationAndSize(DotsPanel.getX(), DotsPanel.getY(), DotsPanel.getWidth(), DotsPanel.getHeight());
+		 DotsPanel.add(plIP.getCanvas(), 0,0);
+//		 plIP.close();
+		 
+		 ImagePlus dplIP=dpl.getImagePlus();
+		 dplIP.show();
+		 dplIP.getWindow().setLocationAndSize(DotsDtPanel.getX(), DotsDtPanel.getY(), DotsDtPanel.getWidth(), DotsDtPanel.getHeight());
+		 DotsDtPanel.add(dplIP.getCanvas(), 0,0);
+//		 dplIP.close();
 		 
 		 System.out.println(Mav[22]);
 	        System.out.println(M[22][35]);
@@ -836,6 +883,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
    	IJ.run("Duplicate...", "duplicate");
    	ImagePlus imageA = WindowManager.getCurrentImage();	
 	imageA.setTitle("imageA");
+	ImageCanvas imageAC = new ImageCanvas(imageA);
+	DetectDots_A.canvas=imageAC;
    	
 	ImageStack stackA=imageA.getImageStack();
    	ImageStack stkDP=DotDetect(stackA,gbSigma1,cycles,accuracy);
@@ -888,4 +937,20 @@ public class DetectDots_A extends JFrame implements ActionListener {
    }
 }
    
+class EPanel extends JPanel {
 
+    public EPanel() {
+        setBorder(BorderFactory.createLineBorder(Color.black));
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(250,200);
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);       
+
+        // Draw Text
+        g.drawString("This is my custom Panel!",10,20);
+    }  
+}

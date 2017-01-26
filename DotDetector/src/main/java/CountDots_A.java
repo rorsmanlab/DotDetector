@@ -19,29 +19,31 @@ import ij.process.ByteProcessor;
 		double tolerance2 = Double.parseDouble(DetectDots_A.tftolerance2.getText()); //100; // for dot detection
      	int refFrame = Integer.parseInt(DetectDots_A.tfreframe.getText()); //5; //frame for roi detection
      	int lifetime = Integer.parseInt(DetectDots_A.tflifetime.getText()); //4;
-	     double accuracy = Double.parseDouble(DetectDots_A.tfaccuracy.getText()); //0.0002; // accuracy for Gaussian blur, pretty standard
-	     double StartTime=System.nanoTime();
-	     	double ElapsedTime;
+//	    double accuracy = Double.parseDouble(DetectDots_A.tfaccuracy.getText()); //0.0002; // accuracy for Gaussian blur, pretty standard
+	    double StartTime=System.nanoTime();
+	   	double ElapsedTime;
 
 	    DetectDots_A.progressBar.setValue(0);
 //	   	IJ.run("Duplicate...", "duplicate");
-	    
-//	   	ImagePlus stackDP = WindowManager.getCurrentImage();	
+//	    ImagePlus stackDP = WindowManager.getCurrentImage();	
 		
 	   	ImagePlus stackDP = WindowManager.getImage("DoG");
 		stackDP.setTitle("imageDP");
 		ImageStack stkDP = stackDP.getImageStack();
+		ImagePlus stackDF=stackDP.duplicate();
 		
 		ImagePlus stackSG = WindowManager.getImage("Segmented");
 		ImageStack stkSG = stackSG.getImageStack();
-	    
-	    
+//
+	    if (DetectDots_A.checkBoxBordersDotCount.isSelected()){
         ImageCalculator ik = new ImageCalculator();
-        ImagePlus stackDF = stackDP.duplicate();
+//      stackDF = stackDP.duplicate();
         stackDF.setTitle("Difference");
         ik.run("AND stack", stackDF, stackSG);
         stackDF.show();
-        
+	    };
+	    stackDF.show();
+	    
         ImageStack stkDT = DetectDots_A.ConvertToDots(stackDF.getStack(), tolerance2);
           	ImagePlus stackDT = new ImagePlus("Dotted", stkDT);
           	stackDT.show();
@@ -61,7 +63,7 @@ import ij.process.ByteProcessor;
 //          	pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, Measurements.AREA, tmpResults, 0, Double.POSITIVE_INFINITY);
           	pa.analyze(imageRFb, imageRFb.getProcessor());
           //	
-          if (DetectDots_A.checkBoxDotCount.isSelected()){
+          if (DetectDots_A.checkBoxPlotDotCount.isSelected()){
         	DetectDots_A.PlotDotResults();
         	};
         	
