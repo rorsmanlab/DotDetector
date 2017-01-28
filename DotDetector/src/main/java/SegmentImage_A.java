@@ -6,10 +6,10 @@ import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
 
-	public class SegmentImage_A implements ActionListener {
+	public class SegmentImage_A { // implements ActionListener {
 //
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
+//	@Override
+	public static void SegmentImage (){ //actionPerformed(ActionEvent arg0) {
 		 int noise = Integer.parseInt(DetectDots_A.tfnoise.getText()); //25; // for segmentation
 	     double gbSigma2 = Double.parseDouble(DetectDots_A.tfgbSigma2.getText()); //1; //for segmentation
 	     double tolerance = Double.parseDouble(DetectDots_A.tftolerance1.getText()); //10;//for segmentation
@@ -22,14 +22,25 @@ import ij.WindowManager;
 //	      	imageA.show();
 //	        	ImagePlus imageAa = WindowManager.getCurrentImage();
 	     	DetectDots_A.progressBar.setValue(0);
+	   	
+	   	ImagePlus image0;
+	   	if (DetectDots_A.RawImageName!=null){
+	   		image0 = WindowManager.getImage(DetectDots_A.RawImageName);
+	   	}
+	   	else{
+	   		image0 = WindowManager.getCurrentImage();
+	   	};
+	   	WindowManager.setCurrentWindow(image0.getWindow());
 	   	IJ.run("Duplicate...", "duplicate");
-	   	ImagePlus imageA = WindowManager.getCurrentImage();	
+	   	ImagePlus imageA = WindowManager.getCurrentImage();
 		imageA.setTitle("imageA");
 		ImageStack stackA=imageA.getImageStack();
 		
 	    ImageStack stkSG=DetectDots_A.SegmentDetect(stackA,gbSigma2,tolerance,noise,accuracy);
 	    ImagePlus stackSG = new ImagePlus("Segmented", stkSG);
 	    stackSG.show();
+	    stackSG.getWindow().setLocation(stackSG.getWindow().getWidth()+600, 0);
+//	    stackSG.getWindow().setLocation(imageA.getWindow().getX()-stackSG.getWindow().getWidth()-16, imageA.getWindow().getY()+8);
 	    
 	    ElapsedTime=Math.round((System.nanoTime()-StartTime)*1E-07);
       	System.out.println("Elapsed time = "+ ElapsedTime/100 +" s");
