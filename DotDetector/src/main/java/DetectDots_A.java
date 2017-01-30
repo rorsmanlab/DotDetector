@@ -56,6 +56,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 	  
 	
 	
+
 	public static JFrame frame_3;
    private Label lblgbSigma1;    // Declare a Label component
    private Label lblaccuracy;    // Declare a Label component
@@ -87,10 +88,6 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static JCheckBox checkBoxPlotDotCount;
    private JPanel panelProgress;
    private Label labelProgress;
-   private JTable table;
-   private Label labelOutput;
-   private Label label;
-   private Label labelHeatmap;
    public static JProgressBar progressBar;
    private JButton button;
    private JCheckBox checkBoxFourier;
@@ -112,10 +109,10 @@ public class DetectDots_A extends JFrame implements ActionListener {
    private JSeparator separator_1;
    public static JCheckBox checkBoxBordersDotCount;
    public static Canvas canvas;
-   public static JPanel HeatMapPanel;
-   public static JPanel DotsPanel;
-   public static JPanel DotsDtPanel;
    public static String RawImageName;
+//   public static JCheckBox checkBoxResetCount;
+   public static JCheckBox checkBoxCorrLifetimeDotCount;
+   public static JCheckBox chckbxDeletePrevious;
 
 
 
@@ -134,7 +131,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 	   
 	   super("Test");
        Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
-       setPreferredSize(new Dimension((590*screenSize.width/1920), (690*screenSize.height/1200)));
+       setPreferredSize(new Dimension(290, 690));
        Dimension windowSize = new Dimension(getPreferredSize());
 //       int wdwLeft = -600 + screenSize.width / 2 - windowSize.width / 2;
 //       int wdwTop = -300+screenSize.height / 2 - windowSize.height / 2;
@@ -151,37 +148,6 @@ public class DetectDots_A extends JFrame implements ActionListener {
    	getContentPane().setBackground(SystemColor.menu);
       getContentPane().setLayout(null);
       getContentPane().setLocation(30, 30);
-            
-      labelHeatmap = new Label("dots");
-      labelHeatmap.setBounds(289, 540, 35, 22);
-      getContentPane().add(labelHeatmap);
-      
-      HeatMapPanel = new JPanel();
-      HeatMapPanel.setBackground(Color.WHITE);
-      HeatMapPanel.setBounds(289, 546, 264, 87);
-      getContentPane().add(HeatMapPanel);
-      
-      label = new Label("dots");
-      label.setBounds(289, 93, 35, 22);
-      getContentPane().add(label);
-      
-      DotsPanel = new JPanel();
-      DotsPanel.setBackground(Color.WHITE);
-      DotsPanel.setBounds(289, 99, 264, 215);
-      getContentPane().add(DotsPanel);
-      
-      Label labelDdt = new Label("d/dt");
-      labelDdt.setBounds(298, 320, 25, 22);
-      getContentPane().add(labelDdt);
-      
-      DotsDtPanel = new JPanel();
-      DotsDtPanel.setBackground(Color.WHITE);
-      DotsDtPanel.setBounds(289, 320, 264, 215);
-      getContentPane().add(DotsDtPanel);
-      
-      labelOutput = new Label("data output");
-      labelOutput.setBounds(297, 0, 79, 22);
-      getContentPane().add(labelOutput);
       
       JDesktopPane desktopPane = new JDesktopPane();
       desktopPane.setBounds(91, 551, 1, 1);
@@ -250,7 +216,12 @@ public class DetectDots_A extends JFrame implements ActionListener {
       JButton btnDoGApply = new JButton("DoG");
       btnDoGApply.setBounds(7, 58, 89, 23);
       panelDoG.add(btnDoGApply);
-      btnDoGApply.addActionListener(new DoGOfImage_A());
+//      btnDoGApply.addActionListener(new DoGOfImage_A());
+      btnDoGApply.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent e) {
+      	DoGOfImage_A.DoGOfImage();
+      	}
+      });
       
       
       JCheckBox checkBoxDoGInclude = new JCheckBox("Include");
@@ -385,7 +356,16 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  btnDotCount = new JButton("Dot count");
                  btnDotCount.setBounds(5, 128, 89, 23);
                  panelDotCount.add(btnDotCount);
-                 btnDotCount.addActionListener(new CountDots_A());
+//                 btnDotCount.addActionListener(new CountDots_A());
+                 btnDotCount.addActionListener(new ActionListener() {
+                   	public void actionPerformed(ActionEvent arg0) {
+                   	CountDots_A.CountDots();
+                   	}
+
+						
+                   });
+                 
+                 
                  
                  checkBoxPlotDotCount = new JCheckBox("Plot");
                  checkBoxPlotDotCount.setSelected(true);
@@ -398,6 +378,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDotCount.add(lbltolerance2);
                  
                  tftolerance2 = new JTextField("100", 10);
+                 tftolerance2.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 		CountDots_A.CountDots();
+                 	}
+                 });
                  tftolerance2.setBounds(218, 10, 35, 20);
                  panelDotCount.add(tftolerance2);
                  tftolerance2.setEditable(true);
@@ -408,6 +393,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDotCount.add(lblreframe);
                  
                  tfreframe = new JTextField("2", 10);
+                 tfreframe.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 		CountDots_A.CountDots();
+                 	}
+                 });
                  tfreframe.setBounds(218, 39, 35, 20);
                  panelDotCount.add(tfreframe);
                  tfreframe.setEditable(true);
@@ -428,9 +418,18 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDotCount.add(checkBoxCorrLifetimeDotCount);
                  
                  checkBoxBordersDotCount = new JCheckBox("Border corr");
+                 checkBoxBordersDotCount.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 		CountDots_A.CountDots();	}
+                 });
                  checkBoxBordersDotCount.setSelected(true);
                  checkBoxBordersDotCount.setBounds(6, 64, 114, 23);
                  panelDotCount.add(checkBoxBordersDotCount);
+                 
+                 chckbxDeletePrevious = new JCheckBox("Delete previous");
+                 chckbxDeletePrevious.setSelected(true);
+                 chckbxDeletePrevious.setBounds(6, 94, 97, 23);
+                 panelDotCount.add(chckbxDeletePrevious);
                  
                  panelProgress = new JPanel();
                  panelProgress.setLayout(null);
@@ -492,16 +491,9 @@ public class DetectDots_A extends JFrame implements ActionListener {
                       	public void actionPerformed(ActionEvent arg0) {
                       	ResetDetectDots_A.ResetDetectDots();
                       	}
-
-						
-                      });
+	                    });
                       btnReset.setBounds(10, 72, 89, 23);
                       panelProgress.add(btnReset);
-                      
-                      table = new JTable();
-                      table.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-                      table.setBounds(283, 11, 270, 76);
-                      getContentPane().add(table);
                       
                       progressBar = new JProgressBar();
                       progressBar.setBounds(10, 619, 267, 14);
@@ -513,29 +505,10 @@ public class DetectDots_A extends JFrame implements ActionListener {
                       btnPlot.addActionListener(new PlotDotResults_A());
                       btnDetect.addActionListener(this);
                       
-                     
-//       
-//       JButton btnDoGonly = new JButton("only DoG");
-//       add (btnDoGonly);
-//       btnDoGonly.putClientProperty("gbSigma1", gbSigma1);
-//       btnDoGonly.putClientProperty("accuracy", accuracy);
-//       btnDoGonly.putClientProperty("cycles", cycles);
-//       btnDoGonly.addActionListener(new DoGOfImage()); 
-//       
-//      JButton btnDetect = new JButton(new AbstractAction("Detect") {
-       
-       
-            
-      
-//      btnPlot.addActionListener(this);
-      
-         // btnCount is the source object that fires ActionEvent when clicked.
-         // The source add "this" instance as an ActionEvent listener, which provides
-         //  an ActionEvent handler called actionPerformed().
-         // Clicking btnCount invokes actionPerformed().
+
  
       setTitle("Dot Detector");  // "super" Frame sets its title
-      setSize(582, 675);        // "super" Frame sets its initial window size
+      setSize(295, 675);        // "super" Frame sets its initial window size
  
       // For inspecting the components/container objects
       // System.out.println(this);
@@ -762,7 +735,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
 
 	
 	public static void PlotDotResults() {
-		
+		Dimension HMPreferredSize = new Dimension (200,100);
+		Dimension RTPreferredSize = new Dimension (350,200);
 //		int [][] M = null;
 //		ImagePlus imagePL = WindowManager.getImage("DotCorrected");
 		ImagePlus imagePL = WindowManager.getImage("Dotted");  
@@ -770,7 +744,10 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		manager.setLocation(imagePL.getWindow().getWidth()*2+600, 0);
 		ResultsTable rt = manager.multiMeasure(imagePL);
 		rt.show("Results"); 
-		rt.getResultsWindow().setLocation(0, 700);
+		rt.getResultsWindow().setLocation(300, 600);
+		rt.getResultsWindow().setPreferredSize(RTPreferredSize);
+		rt.getResultsWindow().setSize(350, 200); 
+		
 		ImageProcessor ip = rt.getTableAsImage();
 		ImageProcessor ip2=ip.rotateLeft();
 		
@@ -790,8 +767,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		ImagePlus imageRE = new ImagePlus("Results HeatMap",ip2);
 		imageRE.show();
 //		imageRE.getWindow().setLocationAndSize(HeatMapPanel.getX(), HeatMapPanel.getY(), HeatMapPanel.getWidth(), HeatMapPanel.getHeight());
-		imageRE.getWindow().setLocation(HeatMapPanel.getX(), HeatMapPanel.getY());
-		imageRE.getWindow().setPreferredSize(HeatMapPanel.getPreferredSize());
+		imageRE.getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+40)*2, 0);
+//		imageRE.getWindow().setPreferredSize(HMPreferredSize);
 		ImageCanvas imageREC=imageRE.getCanvas();
 //		imageREC.setPreferredSize(HeatMapPanel.getSize());
 //		HeatMapPanel.add(imageREC,0,0);
@@ -833,23 +810,28 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		 
 		 
 		 Plot pl = new Plot("dots","time","F", Mav_x,Mav);
-//		 pl.show();
+		 pl.setColor(Color.blue);
+		 pl.show();
+		 pl.getImagePlus().getWindow().setLocationRelativeTo(imageREC);
+		 pl.getImagePlus().getWindow().setLocation(0, 100);
+//		 pl.getImagePlus().getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+10)*2, 100);
 		 
 		 
 		 		 
 		 Plot dpl = new Plot("derivative","time","dFdt", dt,dMav);
-//		 dpl.show();
+		 dpl.show();
+//		 dpl.getImagePlus().getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+10)*2, 200);
 		 
-		 ImagePlus plIP=pl.getImagePlus();
-		 plIP.show();
-		 plIP.getWindow().setLocationAndSize(DotsPanel.getX(), DotsPanel.getY(), DotsPanel.getWidth(), DotsPanel.getHeight());
-		 DotsPanel.add(plIP.getCanvas(), 0,0);
+//		 ImagePlus plIP=pl.getImagePlus();
+//		 plIP.show();
+//		 plIP.getWindow().setLocationAndSize(300, 120, 200, 100);
+//		 DotsPanel.add(plIP.getCanvas(), 0,0);
 //		 plIP.close();
 		 
-		 ImagePlus dplIP=dpl.getImagePlus();
-		 dplIP.show();
-		 dplIP.getWindow().setLocationAndSize(DotsDtPanel.getX(), DotsDtPanel.getY(), DotsDtPanel.getWidth(), DotsDtPanel.getHeight());
-		 DotsDtPanel.add(dplIP.getCanvas(), 0,0);
+//		 ImagePlus dplIP=dpl.getImagePlus();
+//		 dplIP.show();
+//		 dplIP.getWindow().setLocationAndSize(300, 240, 200, 100);
+//		 DotsDtPanel.add(dplIP.getCanvas(), 0,0);
 //		 dplIP.close();
 		 
 		 System.out.println(Mav[22]);

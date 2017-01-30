@@ -39,7 +39,7 @@ import ij.WindowManager;
 	    ImageStack stkSG=DetectDots_A.SegmentDetect(stackA,gbSigma2,tolerance,noise,accuracy);
 	    ImagePlus stackSG = new ImagePlus("Segmented", stkSG);
 	    stackSG.show();
-	    stackSG.getWindow().setLocation(stackSG.getWindow().getWidth()+600, 0);
+	    stackSG.getWindow().setLocation(stackSG.getWindow().getWidth()+300, 0);
 //	    stackSG.getWindow().setLocation(imageA.getWindow().getX()-stackSG.getWindow().getWidth()-16, imageA.getWindow().getY()+8);
 	    
 	    ElapsedTime=Math.round((System.nanoTime()-StartTime)*1E-07);

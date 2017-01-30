@@ -12,34 +12,31 @@ public static void ResetDetectDots() {
 	
 	ImagePlus image0 = WindowManager.getImage(DetectDots_A.RawImageName);
 	WindowManager.setCurrentWindow(image0.getWindow());
-	int imageNumber=WindowManager.getImageCount();
-//	System.out.println(imageNumber);
-	
-	for (int i=1; i<=imageNumber; i++){
-//		System.out.println(WindowManager.getImage(i).getTitle());
-		if (null==WindowManager.getImage(i).getTitle()) {
-			WindowManager.getImage(i).changes=false;
-			WindowManager.getImage(i).close();
-		}
-		else if (WindowManager.getImage(i).getTitle().equals(DetectDots_A.RawImageName)){
-//			System.out.println(WindowManager.getImage(i).getTitle()+" is a match");
-		}
-		else {
-//			System.out.println(WindowManager.getImage(i).getTitle()+" doesn't match");
-			try {
-			WindowManager.getImage(i).changes=false;
-			WindowManager.getImage(i).close();
-			}
-			catch(NullPointerException e){
-				System.out.println("privet, ja tvoja exception");
-				ResetDetectDots_A.ResetDetectDots();
-			}
+	CountDots_A.ResetDotCount();
+	if (WindowManager.getImage("DoG")!=null) {WindowManager.getImage("DoG").close();}
+	if (WindowManager.getImage("Segmented")!=null) {WindowManager.getImage("Segmented").close();}
+
+	//	int imageNumber=WindowManager.getImageCount();
+//	for (int i=1; i<=imageNumber; i++){
+//		if (null==WindowManager.getImage(i).getTitle()) {
+//			WindowManager.getImage(i).changes=false;
+//			WindowManager.getImage(i).close();
+//		}
+//		else if (WindowManager.getImage(i).getTitle().equals(DetectDots_A.RawImageName)){}
+//		else {
+//			try {
+//			WindowManager.getImage(i).changes=false;
+//			WindowManager.getImage(i).close();
 //			}
-		}
-	}
-	
-	RoiManager.getInstance().close();
-	ResultsTable.getResultsWindow().close(false);
+//			catch(NullPointerException e){
+//				System.out.println("privet, ja tvoja exception");
+//				ResetDetectDots_A.ResetDetectDots();
+//			}
+//		}
+//	}
+//	
+//	RoiManager.getInstance().close();
+//	ResultsTable.getResultsWindow().close(false);
 	
 
 	
