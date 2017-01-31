@@ -50,6 +50,15 @@ import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.Box;
 import javax.swing.border.LineBorder;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
  
 // An AWT program inherits from the top-level container java.awt.Frame
 public class DetectDots_A extends JFrame implements ActionListener {
@@ -57,7 +66,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 	
 	
 
-	public static JFrame frame_3;
+//	public static JFrame frame_3;
    private Label lblgbSigma1;    // Declare a Label component
    private Label lblaccuracy;    // Declare a Label component
    private Label lblcycles;    // Declare a Label component
@@ -126,11 +135,12 @@ public class DetectDots_A extends JFrame implements ActionListener {
 	
    public DetectDots_A () {
 	   
+	   super("Dot detector");
 	   // positioning of the frame window, courtesy of clartaq: 
 	   //http://stackoverflow.com/questions/1685862/swing-how-to-position-jframe-n-pixels-away-from-the-center-of-the-screen-at-fir
 	   
-	   super("Test");
-       Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+
+       final Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
        setPreferredSize(new Dimension(290, 690));
        Dimension windowSize = new Dimension(getPreferredSize());
 //       int wdwLeft = -600 + screenSize.width / 2 - windowSize.width / 2;
@@ -166,6 +176,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
             panelSegmentation.add(lblnoise);
       
       tfnoise = new JTextField("25", 10);
+      tfnoise.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent e) {
+      		SegmentImage_A.SegmentImage();
+      	}
+      });
       tfnoise.setBounds(218, 10, 35, 20);
       panelSegmentation.add(tfnoise);
       tfnoise.setEditable(true);
@@ -177,6 +192,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
       
       
       tfgbSigma2 = new JTextField("1", 10);
+      tfgbSigma2.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent e) {
+      		SegmentImage_A.SegmentImage();
+      	}
+      });
       tfgbSigma2.setBounds(218, 38, 35, 20);
       panelSegmentation.add(tfgbSigma2);
       tfgbSigma2.setEditable(true);
@@ -188,6 +208,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
       
             
             tftolerance1 = new JTextField("10", 10);
+            tftolerance1.addActionListener(new ActionListener() {
+            	public void actionPerformed(ActionEvent e) {
+            		SegmentImage_A.SegmentImage();
+            	}
+            });
             tftolerance1.setBounds(218, 65, 35, 20);
             panelSegmentation.add(tftolerance1);
             tftolerance1.setEditable(true);
@@ -236,6 +261,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
       panelDoG.add(lblgbSigma1);
       
       tfgbSigma1 = new JTextField("1", 10);
+      tfgbSigma1.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent arg0) {
+      		DoGOfImage_A.DoGOfImage();
+      	}
+      });
       tfgbSigma1.setBounds(201, 3, 52, 21);
       panelDoG.add(tfgbSigma1);
       tfgbSigma1.setEditable(true);
@@ -256,6 +286,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDoG.add(lblcycles);
                  
                  tfcycles = new JTextField("1", 10);
+                 tfcycles.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 		DoGOfImage_A.DoGOfImage();
+                 	}
+                 });
                  tfcycles.setBounds(201, 58, 52, 21);
                  panelDoG.add(tfcycles);
                  tfcycles.setEditable(true);
@@ -735,18 +770,19 @@ public class DetectDots_A extends JFrame implements ActionListener {
 
 	
 	public static void PlotDotResults() {
-		Dimension HMPreferredSize = new Dimension (200,100);
+		final Dimension screenSize = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+//		Dimension HMPreferredSize = new Dimension (200,100);
 		Dimension RTPreferredSize = new Dimension (350,200);
 //		int [][] M = null;
 //		ImagePlus imagePL = WindowManager.getImage("DotCorrected");
 		ImagePlus imagePL = WindowManager.getImage("Dotted");  
 		RoiManager manager = RoiManager.getInstance();
-		manager.setLocation(imagePL.getWindow().getWidth()*2+600, 0);
+		manager.setLocation(700, 600);
 		ResultsTable rt = manager.multiMeasure(imagePL);
 		rt.show("Results"); 
-		rt.getResultsWindow().setLocation(300, 600);
-		rt.getResultsWindow().setPreferredSize(RTPreferredSize);
-		rt.getResultsWindow().setSize(350, 200); 
+		ResultsTable.getResultsWindow().setLocation(300, 600);
+		ResultsTable.getResultsWindow().setPreferredSize(RTPreferredSize);
+		ResultsTable.getResultsWindow().setSize(350, 200); 
 		
 		ImageProcessor ip = rt.getTableAsImage();
 		ImageProcessor ip2=ip.rotateLeft();
@@ -767,7 +803,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		ImagePlus imageRE = new ImagePlus("Results HeatMap",ip2);
 		imageRE.show();
 //		imageRE.getWindow().setLocationAndSize(HeatMapPanel.getX(), HeatMapPanel.getY(), HeatMapPanel.getWidth(), HeatMapPanel.getHeight());
-		imageRE.getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+40)*2, 0);
+		imageRE.getWindow().setLocation(screenSize.width/2, 0);
 //		imageRE.getWindow().setPreferredSize(HMPreferredSize);
 		ImageCanvas imageREC=imageRE.getCanvas();
 //		imageREC.setPreferredSize(HeatMapPanel.getSize());
@@ -789,6 +825,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		 double[] Mav_x = new double [height];
 		 double[] dMav = new double [height-1];
 		 double[] dt = new double [height-1];
+//		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		 final XYSeries dotsSeries = new XYSeries("dots");
 		 
 		 for (int i = 1;i<height;i++){
 //	        Mav[i]= 0;
@@ -799,32 +837,62 @@ public class DetectDots_A extends JFrame implements ActionListener {
 //	        	M [i][j] = ip2.get(i,j);
 	        	Mav[i]+=M[i][j];
 //	        	ip3.set(i, j,(256-M[i][j]));
+	        	dotsSeries.add(Mav_x[i],Mav[i]);
 	        }
 		 }
 		 
+		 final XYSeries dotsDtSeries = new XYSeries("derivative");
 		 for (int i = 1;i<(height-1);i++){
 		        dt[i]=i;
-				dMav[i]=Mav[i+1]-Mav[i]; 
+				dMav[i]=Mav[i+1]-Mav[i];
+				dotsDtSeries.add(Mav_x[i],dMav[i]);
 			 }
 			
 		 
 		 
 		 Plot pl = new Plot("dots","time","F", Mav_x,Mav);
 		 pl.setColor(Color.blue);
-		 pl.show();
-		 pl.getImagePlus().getWindow().setLocationRelativeTo(imageREC);
-		 pl.getImagePlus().getWindow().setLocation(0, 100);
-//		 pl.getImagePlus().getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+10)*2, 100);
+		 ImagePlus plIP=pl.getImagePlus();
+		 plIP.show();
+		 plIP.getWindow().setLocation(screenSize.width/2, 300);
+		 plIP.getWindow().setSize(imageRE.getWindow().getWidth(), imageRE.getWindow().getHeight()*2);
+//		 Plot dpl = new Plot("derivative","time","dFdt", dt,dMav);
+//		 dpl.setColor(Color.red);
+//		 ImagePlus dplIP=dpl.getImagePlus();
+		 
+
 		 
 		 
-		 		 
-		 Plot dpl = new Plot("derivative","time","dFdt", dt,dMav);
-		 dpl.show();
+//		final XYSeries dots = new XYSeries( "dots" );
+//		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+//		 final XYSeriesCollection dotsData = new XYSeriesCollection(dotsSeries);
+//		final JFreeChart chart = ChartFactory.createXYLineChart("dots", "frame", "dots", dotsData);
+//		chart.pack();
+		
+		
+//		final ChartPanel chartPanel = new ChartPanel(chart);
+//		chartPanel.setVisible(true);
+//		
+//		LineChartAWT chartDots = new LineChartAWT("dots", "frames", dotsData);
+		
+//	    chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+//	    chartPanel.show(true);
+		 
+//		 		 
+//		 //		 PlotWindow.noTicks=true;
+//		 ImageCalculator ik = new ImageCalculator();
+//		 ik.run("XOR", plIP, dplIP);
+//		 plIP.show();
+//		 plIP.getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+50)*2, 3);
+//		 pl.show();
+//		 PlotWindow.noGridLines=true;
+		 
+//		 PlotWindow.noTicks=true;
+//		 dpl.show();
+		 
 //		 dpl.getImagePlus().getWindow().setLocation(300+(WindowManager.getImage("Segmented").getWidth()+10)*2, 200);
 		 
 //		 ImagePlus plIP=pl.getImagePlus();
-//		 plIP.show();
-//		 plIP.getWindow().setLocationAndSize(300, 120, 200, 100);
 //		 DotsPanel.add(plIP.getCanvas(), 0,0);
 //		 plIP.close();
 		 

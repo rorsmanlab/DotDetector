@@ -15,13 +15,9 @@ import ij.WindowManager;
 	     double tolerance = Double.parseDouble(DetectDots_A.tftolerance1.getText()); //10;//for segmentation
 	     double accuracy = Double.parseDouble(DetectDots_A.tfaccuracy.getText()); //0.0002; // accuracy for Gaussian blur, pretty standard
 	     double StartTime=System.nanoTime();
-	     	double ElapsedTime;
-	
-//	   	ImagePlus imageA = IJ.openImage();
-//	      	StartTime=System.nanoTime();
-//	      	imageA.show();
-//	        	ImagePlus imageAa = WindowManager.getCurrentImage();
-	     	DetectDots_A.progressBar.setValue(0);
+	     double ElapsedTime;
+
+	     DetectDots_A.progressBar.setValue(0);
 	   	
 	   	ImagePlus image0;
 	   	if (DetectDots_A.RawImageName!=null){
@@ -40,8 +36,6 @@ import ij.WindowManager;
 	    ImagePlus stackSG = new ImagePlus("Segmented", stkSG);
 	    stackSG.show();
 	    stackSG.getWindow().setLocation(stackSG.getWindow().getWidth()+300, 0);
-//	    stackSG.getWindow().setLocation(imageA.getWindow().getX()-stackSG.getWindow().getWidth()-16, imageA.getWindow().getY()+8);
-	    
 	    ElapsedTime=Math.round((System.nanoTime()-StartTime)*1E-07);
       	System.out.println("Elapsed time = "+ ElapsedTime/100 +" s");
       	DetectDots_A.tfelapsedtime.setText(String.valueOf(ElapsedTime/100));
