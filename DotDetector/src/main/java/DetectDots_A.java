@@ -51,14 +51,7 @@ import javax.swing.JToolBar;
 import javax.swing.Box;
 import javax.swing.border.LineBorder;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
+
  
 // An AWT program inherits from the top-level container java.awt.Frame
 public class DetectDots_A extends JFrame implements ActionListener {
@@ -75,7 +68,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    private Label lbltolerance1;    // Declare a Label component
    private Label lbltolerance2;
    private Label lblreframe;    // Declare a Label component
-   private Label lbllifetime;   
+   private Label lblHessian_a;   
    private Label lblframe;   // Declare a Label component
    private Label lblelapsedtime;
    
@@ -88,7 +81,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static JTextField tftolerance1;// Declare a TextField component 
    public static JTextField tftolerance2;
    public static JTextField tfreframe;
-   public static JTextField tflifetime;
+   public static JTextField tfHessian_a;
    public static JTextField tfframe;
    public static JTextField tfelapsedtime;
    private JPanel panelSegmentation;
@@ -120,8 +113,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static Canvas canvas;
    public static String RawImageName;
 //   public static JCheckBox checkBoxResetCount;
-   public static JCheckBox checkBoxCorrLifetimeDotCount;
    public static JCheckBox chckbxDeletePrevious;
+   public static JCheckBox checkBoxLifetimeCorr;
 
 
 
@@ -438,19 +431,20 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  tfreframe.setEditable(true);
                  
 
-                 lbllifetime = new Label("lifetime");
-                 lbllifetime.setAlignment(Label.RIGHT);
-                 lbllifetime.setBounds(126, 65, 59, 22);
-                 panelDotCount.add(lbllifetime);
+                 lblHessian_a = new Label("Hessian a_max");
+                 lblHessian_a.setAlignment(Label.RIGHT);
+                 lblHessian_a.setBounds(107, 65, 78, 22);
+                 panelDotCount.add(lblHessian_a);
                  
-                 tflifetime = new JTextField("4", 10);
-                 tflifetime.setBounds(218, 66, 35, 20);
-                 panelDotCount.add(tflifetime);
-                 tflifetime.setEditable(true);
-                 
-                 JCheckBox checkBoxCorrLifetimeDotCount = new JCheckBox("Lifetime corr");
-                 checkBoxCorrLifetimeDotCount.setBounds(140, 94, 113, 23);
-                 panelDotCount.add(checkBoxCorrLifetimeDotCount);
+                 tfHessian_a = new JTextField("3", 10);
+                 tfHessian_a.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 	CountDots_A.CountDots();
+                 	}
+                 });
+                 tfHessian_a.setBounds(218, 66, 35, 20);
+                 panelDotCount.add(tfHessian_a);
+                 tfHessian_a.setEditable(true);
                  
                  checkBoxBordersDotCount = new JCheckBox("Border corr");
                  checkBoxBordersDotCount.addActionListener(new ActionListener() {
@@ -465,6 +459,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  chckbxDeletePrevious.setSelected(true);
                  chckbxDeletePrevious.setBounds(6, 94, 97, 23);
                  panelDotCount.add(chckbxDeletePrevious);
+                 
+                 checkBoxLifetimeCorr = new JCheckBox("Lifetime corr");
+                 checkBoxLifetimeCorr.setSelected(true);
+                 checkBoxLifetimeCorr.setBounds(159, 95, 97, 23);
+                 panelDotCount.add(checkBoxLifetimeCorr);
                  
                  panelProgress = new JPanel();
                  panelProgress.setLayout(null);
@@ -826,7 +825,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		 double[] dMav = new double [height-1];
 		 double[] dt = new double [height-1];
 //		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		 final XYSeries dotsSeries = new XYSeries("dots");
+//		 final XYSeries dotsSeries = new XYSeries("dots");
 		 
 		 for (int i = 1;i<height;i++){
 //	        Mav[i]= 0;
@@ -837,15 +836,15 @@ public class DetectDots_A extends JFrame implements ActionListener {
 //	        	M [i][j] = ip2.get(i,j);
 	        	Mav[i]+=M[i][j];
 //	        	ip3.set(i, j,(256-M[i][j]));
-	        	dotsSeries.add(Mav_x[i],Mav[i]);
+//	        	dotsSeries.add(Mav_x[i],Mav[i]);
 	        }
 		 }
 		 
-		 final XYSeries dotsDtSeries = new XYSeries("derivative");
+//		 final XYSeries dotsDtSeries = new XYSeries("derivative");
 		 for (int i = 1;i<(height-1);i++){
 		        dt[i]=i;
 				dMav[i]=Mav[i+1]-Mav[i];
-				dotsDtSeries.add(Mav_x[i],dMav[i]);
+//				dotsDtSeries.add(Mav_x[i],dMav[i]);
 			 }
 			
 		 
@@ -923,7 +922,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
      	double tolerance = Double.parseDouble(tftolerance1.getText()); //10;//for segmentation
      	double tolerance2 = Double.parseDouble(tftolerance2.getText()); //100; // for dot detection
      	int refFrame = Integer.parseInt(tfreframe.getText()); //5; //frame for roi detection
-     	int lifetime = Integer.parseInt(tflifetime.getText()); //4;
+     	int lifetime = Integer.parseInt(tfHessian_a.getText()); //4;
 //     	double gbSigma3 = 4;
      	double StartTime=System.nanoTime();
      	double ElapsedTime;
