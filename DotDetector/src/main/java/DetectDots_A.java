@@ -268,7 +268,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
            lblaccuracy.setBounds(106, 30, 79, 22);
            panelDoG.add(lblaccuracy);
            
-           tfaccuracy = new JTextField("0.0002", 10);
+           tfaccuracy = new JTextField("0.00002", 10);
            tfaccuracy.setBounds(201, 30, 52, 22);
            panelDoG.add(tfaccuracy);
            tfaccuracy.setEditable(true);
@@ -331,6 +331,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDoG.add(checkBoxLoG);
                  
                  button_1 = new JButton("LoG");
+                 button_1.addActionListener(new ActionListener() {
+                 	public void actionPerformed(ActionEvent e) {
+                 	HessianCorrect_A.HessianTest();
+                 	}
+                 });
                  button_1.setBounds(10, 223, 89, 23);
                  panelDoG.add(button_1);
                  
@@ -625,7 +630,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 			ImagePlus imageDP = new ImagePlus("imageDP", ip);
 			ImagePlus imageGB = new ImagePlus("imageGB", ip2);
 			ImageCalculator ik = new ImageCalculator(); 
-			ik.run("OR", imageDP, imageGB);
+//			ik.run("OR", imageDP, imageGB);
 			ik.run("Subtract", imageDP, imageGB);
 			IJ.run(imageDP, "Multiply...", "value=2");
 			stk.setProcessor(ip, i);

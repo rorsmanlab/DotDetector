@@ -12,8 +12,7 @@ import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 
 	public class CountDots_A { //implements ActionListener {
-//
-//	@Override
+
 	public static void CountDots () { // actionPerformed(ActionEvent arg0) {
 		double tolerance2 = Double.parseDouble(DetectDots_A.tftolerance2.getText()); //100; // for dot detection
      	int refFrame = Integer.parseInt(DetectDots_A.tfreframe.getText()); //5; //frame for roi detection
@@ -29,7 +28,6 @@ import ij.process.ImageProcessor;
 	    }
 	    
 	    ImagePlus stackDP = WindowManager.getImage("DoG");
-		stackDP.setTitle("imageDP");
 		ImageStack stkDP = stackDP.getStack();
 		ImageStack stkDF;
 		ImagePlus stackSG = WindowManager.getImage("Segmented");
@@ -39,6 +37,7 @@ import ij.process.ImageProcessor;
 //        ImageCalculator ik = new ImageCalculator();
 //        ik.run("Subtract stack", stackDF, stackSG);
 	    	 stkDF=HessianCorrect_A.HessianCorrect(stkDP);
+	    	 System.out.println("applying Hessian correction");
 	    	}
         else {
         	stkDF=stkDP.duplicate();
@@ -65,7 +64,8 @@ import ij.process.ImageProcessor;
          
           	
           	
-          	ImageProcessor ip=stkSG.getProcessor(refFrame);
+          	ImageProcessor ipd=stkSG.getProcessor(refFrame);
+          	ImageProcessor ip = ipd.duplicate();
           	ImagePlus imageRF = new ImagePlus("Reference frame",ip);
           	ip.invert();
           	ImagePlus imageRFb=DetectDots_A.CreateBinary(imageRF,true);
