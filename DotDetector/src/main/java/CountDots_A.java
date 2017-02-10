@@ -1,6 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.WindowManager;
@@ -47,8 +48,8 @@ import ij.process.ImageProcessor;
             
         
         
-        stackDF.show();
-        stackDF.getWindow().setLocation(300, stackDF.getWindow().getHeight()+10);
+//        stackDF.show();
+//        stackDF.getWindow().setLocation(300, stackDF.getWindow().getHeight()+10);
 	            
         ImageStack stkDT = DetectDots_A.ConvertToDots(stackDF.getStack(), tolerance2);
         	ImagePlus stackDT = new ImagePlus("Dotted", stkDT);
@@ -72,8 +73,10 @@ import ij.process.ImageProcessor;
 //          	ip.convertToByte(true);
 //          	ImagePlus imageRF = new ImagePlus("Reference for ROI",ip);
           	imageRFb.show();
-            imageRFb.getWindow().setLocation(imageRFb.getWindow().getWidth()+300, (stackDT.getWindow().getHeight()+10)*2);
-
+//          	imageRFb.getWindow().setLocation(imageRFb.getWindow().getWidth()+300, (WindowManager.getWindow("HessianCorr").getHeight()+10)*2);
+//            imageRFb.getWindow().setLocation(imageRFb.getWindow().getWidth()+300, (stackDT.getWindow().getHeight()+10)*2);
+          	imageRFb.getWindow().setLocation(300, (stackDT.getWindow().getHeight()+10)*1);
+          	
           	ParticleAnalyzer pa = new ParticleAnalyzer(ParticleAnalyzer.ADD_TO_MANAGER, Measurements.AREA, null, 0, 100000000);
 //          	pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, Measurements.AREA, tmpResults, 0, Double.POSITIVE_INFINITY);
           	pa.analyze(imageRFb, imageRFb.getProcessor());
@@ -81,6 +84,17 @@ import ij.process.ImageProcessor;
           if (DetectDots_A.checkBoxPlotDotCount.isSelected()){
         	DetectDots_A.PlotDotResults();
         	};
+        	
+//        	IJ.run("Merge Channels...", "c1=DoG c2=LocalMax create keep ignore");
+//        	WindowManager.getCurrentImage().setTitle("DoG_LocalMax");
+        	
+        	IJ.run("Merge Channels...", "c1=LocalMax c2=Dotted create keep ignore");
+        	WindowManager.getCurrentImage().setTitle("Lmax_Hess");
+        	WindowManager.getWindow("Lmax_Hess").setLocation(300, (WindowManager.getWindow("Lmax_Hess").getHeight()+10)*2);
+        	
+           	IJ.run("Merge Channels...", "c1=DoG c2=Dotted create keep ignore");
+        	WindowManager.getCurrentImage().setTitle("DoG_Hess");
+        	WindowManager.getWindow("DoG_Hess").setLocation(WindowManager.getWindow("DoG_Hess").getWidth()+300, (WindowManager.getWindow("DoG_Hess").getHeight()+10)*2);
         	
           	ElapsedTime=Math.round((System.nanoTime()-StartTime)*1E-07);
           	System.out.println("Elapsed time = "+ ElapsedTime/100 +" s");
@@ -103,6 +117,10 @@ import ij.process.ImageProcessor;
 		if (WindowManager.getImage("Difference")!=null) {WindowManager.getImage("Difference").close();}
 		if (WindowManager.getImage("Reference frame")!=null) {WindowManager.getImage("Reference frame").close();}
 		if (WindowManager.getImage("DotCorrected")!=null) {WindowManager.getImage("DotCorrected").close();}
+		if (WindowManager.getImage("DoG_LocalMax")!=null) {WindowManager.getImage("DoG_LocalMax").close();}
+		if (WindowManager.getImage("Lmax_Hess")!=null) {WindowManager.getImage("Lmax_Hess").close();}
+		if (WindowManager.getImage("DoG_Hess")!=null) {WindowManager.getImage("DoG_Hess").close();}
+		if (WindowManager.getImage("LocalMax")!=null) {WindowManager.getImage("LocalMax").close();}
 		if (WindowManager.getImage("HessianCorr")!=null) {WindowManager.getImage("HessianCorr").close();}
 		if (RoiManager.getInstance()!=null) {RoiManager.getInstance().close();}
 		if (ResultsTable.getResultsWindow()!=null) {ResultsTable.getResultsWindow().close(false);}

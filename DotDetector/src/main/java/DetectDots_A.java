@@ -68,7 +68,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    private Label lbltolerance1;    // Declare a Label component
    private Label lbltolerance2;
    private Label lblreframe;    // Declare a Label component
-   private Label lblHessian_a;   
+   private Label lblHessian_rho;   
    private Label lblframe;   // Declare a Label component
    private Label lblelapsedtime;
    
@@ -81,7 +81,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static JTextField tftolerance1;// Declare a TextField component 
    public static JTextField tftolerance2;
    public static JTextField tfreframe;
-   public static JTextField tfHessian_a;
+   public static JTextField tfHessian_rho;
    public static JTextField tfframe;
    public static JTextField tfelapsedtime;
    private JPanel panelSegmentation;
@@ -114,7 +114,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
    public static String RawImageName;
 //   public static JCheckBox checkBoxResetCount;
    public static JCheckBox chckbxDeletePrevious;
-   public static JCheckBox checkBoxLifetimeCorr;
+   public static JTextField tfThreshold;
 
 
 
@@ -410,7 +410,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  lbltolerance2.setBounds(114, 10, 71, 22);
                  panelDotCount.add(lbltolerance2);
                  
-                 tftolerance2 = new JTextField("100", 10);
+                 tftolerance2 = new JTextField("30", 10);
                  tftolerance2.addActionListener(new ActionListener() {
                  	public void actionPerformed(ActionEvent e) {
                  		CountDots_A.CountDots();
@@ -420,7 +420,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  panelDotCount.add(tftolerance2);
                  tftolerance2.setEditable(true);
                  
-                 lblreframe = new Label("reference frame");
+                 lblreframe = new Label("ref frame");
                  lblreframe.setAlignment(Label.RIGHT);
                  lblreframe.setBounds(80, 38, 105, 22);
                  panelDotCount.add(lblreframe);
@@ -436,20 +436,20 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  tfreframe.setEditable(true);
                  
 
-                 lblHessian_a = new Label("Hessian a_max");
-                 lblHessian_a.setAlignment(Label.RIGHT);
-                 lblHessian_a.setBounds(107, 65, 78, 22);
-                 panelDotCount.add(lblHessian_a);
+                 lblHessian_rho = new Label("Hessian rho");
+                 lblHessian_rho.setAlignment(Label.RIGHT);
+                 lblHessian_rho.setBounds(107, 65, 78, 22);
+                 panelDotCount.add(lblHessian_rho);
                  
-                 tfHessian_a = new JTextField("3", 10);
-                 tfHessian_a.addActionListener(new ActionListener() {
+                 tfHessian_rho = new JTextField("1", 10);
+                 tfHessian_rho.addActionListener(new ActionListener() {
                  	public void actionPerformed(ActionEvent e) {
                  	CountDots_A.CountDots();
                  	}
                  });
-                 tfHessian_a.setBounds(218, 66, 35, 20);
-                 panelDotCount.add(tfHessian_a);
-                 tfHessian_a.setEditable(true);
+                 tfHessian_rho.setBounds(218, 66, 35, 20);
+                 panelDotCount.add(tfHessian_rho);
+                 tfHessian_rho.setEditable(true);
                  
                  checkBoxBordersDotCount = new JCheckBox("Border corr");
                  checkBoxBordersDotCount.addActionListener(new ActionListener() {
@@ -457,18 +457,23 @@ public class DetectDots_A extends JFrame implements ActionListener {
                  		CountDots_A.CountDots();	}
                  });
                  checkBoxBordersDotCount.setSelected(true);
-                 checkBoxBordersDotCount.setBounds(6, 64, 114, 23);
+                 checkBoxBordersDotCount.setBounds(6, 64, 89, 23);
                  panelDotCount.add(checkBoxBordersDotCount);
                  
-                 chckbxDeletePrevious = new JCheckBox("Delete previous");
+                 chckbxDeletePrevious = new JCheckBox("Delete prev");
                  chckbxDeletePrevious.setSelected(true);
-                 chckbxDeletePrevious.setBounds(6, 94, 97, 23);
+                 chckbxDeletePrevious.setBounds(6, 94, 86, 23);
                  panelDotCount.add(chckbxDeletePrevious);
                  
-                 checkBoxLifetimeCorr = new JCheckBox("Lifetime corr");
-                 checkBoxLifetimeCorr.setSelected(true);
-                 checkBoxLifetimeCorr.setBounds(159, 95, 97, 23);
-                 panelDotCount.add(checkBoxLifetimeCorr);
+                 Label lbl_threshold = new Label(" threshold");
+                 lbl_threshold.setAlignment(Label.RIGHT);
+                 lbl_threshold.setBounds(107, 93, 78, 22);
+                 panelDotCount.add(lbl_threshold);
+                 
+                 tfThreshold = new JTextField("2", 10);
+                 tfThreshold.setEditable(true);
+                 tfThreshold.setBounds(218, 94, 35, 20);
+                 panelDotCount.add(tfThreshold);
                  
                  panelProgress = new JPanel();
                  panelProgress.setLayout(null);
@@ -779,7 +784,8 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		Dimension RTPreferredSize = new Dimension (350,200);
 //		int [][] M = null;
 //		ImagePlus imagePL = WindowManager.getImage("DotCorrected");
-		ImagePlus imagePL = WindowManager.getImage("Dotted");  
+//		ImagePlus imagePL = WindowManager.getImage("Dotted"); 
+		ImagePlus imagePL = WindowManager.getImage("HessianCorr"); 
 		RoiManager manager = RoiManager.getInstance();
 		manager.setLocation(700, 600);
 		ResultsTable rt = manager.multiMeasure(imagePL);
@@ -927,7 +933,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
      	double tolerance = Double.parseDouble(tftolerance1.getText()); //10;//for segmentation
      	double tolerance2 = Double.parseDouble(tftolerance2.getText()); //100; // for dot detection
      	int refFrame = Integer.parseInt(tfreframe.getText()); //5; //frame for roi detection
-     	int lifetime = Integer.parseInt(tfHessian_a.getText()); //4;
+     	int lifetime = Integer.parseInt(tfHessian_rho.getText()); //4;
 //     	double gbSigma3 = 4;
      	double StartTime=System.nanoTime();
      	double ElapsedTime;
