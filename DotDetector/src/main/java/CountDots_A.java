@@ -35,8 +35,6 @@ import ij.process.ImageProcessor;
 		ImageStack stkSG = stackSG.getImageStack();
 
 	    if (DetectDots_A.checkBoxBordersDotCount.isSelected()){
-//        ImageCalculator ik = new ImageCalculator();
-//        ik.run("Subtract stack", stackDF, stackSG);
 	    	 stkDF=HessianCorrect_A.HessianCorrect(stkDP);
 	    	 System.out.println("applying Hessian correction");
 	    	}
@@ -48,13 +46,13 @@ import ij.process.ImageProcessor;
             
         
         
-//        stackDF.show();
-//        stackDF.getWindow().setLocation(300, stackDF.getWindow().getHeight()+10);
-	            
-        ImageStack stkDT = DetectDots_A.ConvertToDots(stackDF.getStack(), tolerance2);
-        	ImagePlus stackDT = new ImagePlus("Dotted", stkDT);
-          	stackDT.show();
-            stackDT.getWindow().setLocation(stackDT.getWindow().getWidth()+300, stackDT.getWindow().getHeight()+10);
+        stackDF.show();
+        stackDF.getWindow().setLocation(300, stackDF.getWindow().getHeight()+10);
+//	            
+//        ImageStack stkDT = DetectDots_A.ConvertToDots(stackDF.getStack(), tolerance2);
+//        	ImagePlus stackDT = new ImagePlus("Dotted", stkDT);
+//          	stackDT.show();
+//            stackDT.getWindow().setLocation(stackDT.getWindow().getWidth()+300, stackDT.getWindow().getHeight()+10);
 
 //         if (DetectDots_A.checkBoxLifetimeCorr.isSelected()){
 //        	 ImageStack stkCDT=DetectDots_A.CorrectDots(stackDT.getStack(), tolerance2, lifetime);
@@ -75,7 +73,7 @@ import ij.process.ImageProcessor;
           	imageRFb.show();
 //          	imageRFb.getWindow().setLocation(imageRFb.getWindow().getWidth()+300, (WindowManager.getWindow("HessianCorr").getHeight()+10)*2);
 //            imageRFb.getWindow().setLocation(imageRFb.getWindow().getWidth()+300, (stackDT.getWindow().getHeight()+10)*2);
-          	imageRFb.getWindow().setLocation(300, (stackDT.getWindow().getHeight()+10)*1);
+          	imageRFb.getWindow().setLocation(300, (stackDF.getWindow().getHeight()+10)*1);
           	
           	ParticleAnalyzer pa = new ParticleAnalyzer(ParticleAnalyzer.ADD_TO_MANAGER, Measurements.AREA, null, 0, 100000000);
 //          	pa = new ParticleAnalyzer(ParticleAnalyzer.SHOW_NONE, Measurements.AREA, tmpResults, 0, Double.POSITIVE_INFINITY);
@@ -85,14 +83,13 @@ import ij.process.ImageProcessor;
         	DetectDots_A.PlotDotResults();
         	};
         	
-//        	IJ.run("Merge Channels...", "c1=DoG c2=LocalMax create keep ignore");
-//        	WindowManager.getCurrentImage().setTitle("DoG_LocalMax");
+
         	
-        	IJ.run("Merge Channels...", "c1=LocalMax c2=Dotted create keep ignore");
+        	IJ.run("Merge Channels...", "c1=LocalMax c2=Difference create keep ignore");
         	WindowManager.getCurrentImage().setTitle("Lmax_Hess");
         	WindowManager.getWindow("Lmax_Hess").setLocation(300, (WindowManager.getWindow("Lmax_Hess").getHeight()+10)*2);
         	
-           	IJ.run("Merge Channels...", "c1=DoG c2=Dotted create keep ignore");
+           	IJ.run("Merge Channels...", "c1=DoG c2=Difference create keep ignore");
         	WindowManager.getCurrentImage().setTitle("DoG_Hess");
         	WindowManager.getWindow("DoG_Hess").setLocation(WindowManager.getWindow("DoG_Hess").getWidth()+300, (WindowManager.getWindow("DoG_Hess").getHeight()+10)*2);
         	
@@ -121,7 +118,9 @@ import ij.process.ImageProcessor;
 		if (WindowManager.getImage("Lmax_Hess")!=null) {WindowManager.getImage("Lmax_Hess").close();}
 		if (WindowManager.getImage("DoG_Hess")!=null) {WindowManager.getImage("DoG_Hess").close();}
 		if (WindowManager.getImage("LocalMax")!=null) {WindowManager.getImage("LocalMax").close();}
-		if (WindowManager.getImage("HessianCorr")!=null) {WindowManager.getImage("HessianCorr").close();}
+		if (WindowManager.getImage("HessianCorr")!=null){
+			WindowManager.getImage("HessianCorr").changes=false;
+			WindowManager.getImage("HessianCorr").close();}
 		if (RoiManager.getInstance()!=null) {RoiManager.getInstance().close();}
 		if (ResultsTable.getResultsWindow()!=null) {ResultsTable.getResultsWindow().close(false);}
 		if (WindowManager.getImage("imageDP")!=null) {WindowManager.getImage("imageDP").setTitle("DoG");}
