@@ -846,11 +846,11 @@ public class DetectDots_A extends JFrame implements ActionListener {
 //		 final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 //		 final XYSeries dotsSeries = new XYSeries("dots");
 		 
-		 for (int i = 1;i<height;i++){
+		 for (int i = 0;i<height;i++){
 //	        Mav[i]= 0;
 	        Mav_x[i]=i;
 	        //	        M[i]=rt.getColumnAsDoubles(i);
-			 for (int j = 1; j < width; j++){
+			 for (int j = 0; j < width; j++){
 				 
 				 if(DetectDots_A.chckBxNormToArea.isSelected()){
 					 M[i][j]=rt.getValueAsDouble(j, i)/rtA.getValueAsDouble(j, i); 
@@ -872,7 +872,7 @@ public class DetectDots_A extends JFrame implements ActionListener {
 		 rt.show("Results"); 
 			System.out.println("value= "+rt.getValueAsDouble(2, 2));
 //			System.out.println(rt.getColumnHeadings());
-			ResultsTable.getResultsWindow().setLocation(300, 600);
+			ResultsTable.getResultsWindow().setLocation(300, 800);
 			ResultsTable.getResultsWindow().setPreferredSize(RTPreferredSize);
 			ResultsTable.getResultsWindow().setSize(350, 200); 
 

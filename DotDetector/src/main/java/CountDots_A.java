@@ -123,6 +123,7 @@ import ij.process.ImageProcessor;
 			WindowManager.getImage("HessianCorr").close();}
 		if (RoiManager.getInstance()!=null) {RoiManager.getInstance().close();}
 		if (ResultsTable.getResultsWindow()!=null) {ResultsTable.getResultsWindow().close(false);}
+//		if (rtA.getResultsWindow()!=null) {ResultsTable.getResultsWindow().close(false);}
 		if (WindowManager.getImage("imageDP")!=null) {WindowManager.getImage("imageDP").setTitle("DoG");}
 
 	}
